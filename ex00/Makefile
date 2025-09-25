@@ -1,4 +1,4 @@
-NAME := ex00
+NAME := convert
 
 SOURCES_DIRECTORY := ./sources
 OBJECTS_DIRECTORY := ./objects

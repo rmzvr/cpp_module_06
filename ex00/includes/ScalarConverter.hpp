@@ -5,11 +5,11 @@
 
 class ScalarConverter
 {
-	private:
-		
 	public:
-		ScalarConverter();
-		~ScalarConverter();
+		ScalarConverter() = delete;
+		virtual	~ScalarConverter() = 0;
+
+		static void	convert(char * str);
 };
 
 #endif
