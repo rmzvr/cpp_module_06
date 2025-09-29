@@ -1,6 +1,6 @@
 #include "ScalarConverter.hpp"
 
-static bool	is_character(std::string input)
+bool	isCharacterLiteral(std::string input)
 {
 	unsigned char	c;
 	if (input.length() == 1)
@@ -8,21 +8,13 @@ static bool	is_character(std::string input)
 		c = static_cast<unsigned char>(input.at(0));
 		if (std::isprint(c) && !std::isdigit(c))
 		{
-			std::cout << "---------------------------" << '\n';
-			std::cout << "Character detection result: " << c << '\n';
-			std::cout << "---------------------------" << '\n';
 			return true;
-		}
-		else
-		{
-			std::cout << "Character detection error: " << "'" << input << "'" << " is non-printable character!" << '\n';
-			return false;
 		}
 	}
 	return false;
 }
 
-static bool	is_integer(std::string input)
+bool	isIntegerLiteral(std::string input)
 {
 	int			result;
 	std::size_t	pos;
@@ -32,22 +24,17 @@ static bool	is_integer(std::string input)
 		result = std::stoi(input, &pos);
 		if (pos == input.length())
 		{
-			std::cout << "---------------------------" << '\n';
-			std::cout << "Integer detection result: " << result << '\n';
-			std::cout << "---------------------------" << '\n';
 			return true;
 		}
-		return false;
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Integer detection error: " << e.what() << '\n';
 		return false;
 	}
 	return false;
 }
 
-static bool	is_float(std::string input)
+bool	isFloatLiteral(std::string input)
 {
 	float		result;
 	std::size_t	pos;
@@ -57,21 +44,16 @@ static bool	is_float(std::string input)
 		result = std::stof(input, &pos);
 		if (pos + 1 == input.length() && input.at(pos) == 'f')
 		{
-			std::cout << "---------------------------" << '\n';
-			std::cout << "Float detection result: " << std::fixed << std::setprecision(1) << result << 'f' << '\n';
-			std::cout << "---------------------------" << '\n';
 			return true;
 		}
-		return false;
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Float detection error: " << e.what() << '\n';
 		return false;
 	}
 	return false;
 }
-static bool	is_double(std::string input)
+bool	isDoubleLiteral(std::string input)
 {
 	double		result;
 	std::size_t	pos;
@@ -81,251 +63,257 @@ static bool	is_double(std::string input)
 		result = std::stod(input, &pos);
 		if (pos == input.length())
 		{
-			std::cout << "---------------------------" << '\n';
-			std::cout << "Double detection result: " << std::fixed << std::setprecision(1) << result << '\n';
-			std::cout << "---------------------------" << '\n';
 			return true;
 		}
-		return false;
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Double detection error: " << e.what() << '\n';
 		return false;
 	}
 	return false;
 }
 
-static ScalarConverter::Types	getType( std::string const & input )
+void	printCharacterValue( char char_value )
 {
-	if (is_integer(input) == true)
+	if (std::isprint(char_value))
 	{
-		return ScalarConverter::Types::Integer;
-	}
-	else if (is_float(input) == true)
-	{
-		return ScalarConverter::Types::Float;
-	}
-	else if (is_double(input) == true)
-	{
-		return ScalarConverter::Types::Double;
-	}
-	else if (is_character(input) == true)
-	{
-		return ScalarConverter::Types::Character;
+		std::cout << "char: " << "'" << char_value << "'" << "\n";
 	}
 	else
 	{
-		return ScalarConverter::Types::Unknown;
+		std::cout << "char: Non displayable" << "\n";
 	}
 }
 
-static int	convertToInteger( std::string const & input )
+void	printIntegerValue( int integer_value )
 {
-	int	i;
-
-	try
-	{
-		i = std::stoi(input);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << "convertToInteger error: " << e.what() << '\n';
-	}
-	return i;
+	std::cout << "int: " << integer_value << "\n";
 }
 
-static float	convertToFloat( std::string const & input )
+void	printFloatValue( float float_value )
 {
-	float	f;
-
-	try
-	{
-		f = std::stof(input);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << "convertToFloat error: " << e.what() << '\n';
-	}
-	return f;
+	std::cout << "float: " << std::fixed << std::setprecision(1) << float_value << 'f' << '\n';
 }
 
-static double	convertToDouble( std::string const & input )
+void	printDoubleValue( double double_value )
 {
-	double	d;
-
-	try
-	{
-		d = std::stod(input);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << "convertToDouble error: " << e.what() << '\n';
-	}
-	return d;
+	std::cout << "double: " << double_value << "\n";
 }
 
-static unsigned char	convertToCharacter( std::string const & input )
+unsigned char	convertToCharacter( std::string const & input )
 {
-	unsigned char	c;
+	unsigned char	char_value;
 
 	try
 	{
-		c = static_cast<unsigned char>(input.at(0));
+		char_value = static_cast<unsigned char>(input.at(0));
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << "convertToCharacter error: " << e.what() << '\n';
 	}
-	return c;
+	return char_value;
 }
 
-static void	characterConversionToOtherTypes( unsigned char c )
+int	convertToInteger( std::string const & input )
 {
-	int				i;
-	float			f;
-	double			d;
+	int	integer_value;
 
-	i = static_cast<int>(c);
-	f = static_cast<float>(c);
-	d = static_cast<double>(c);
-
-	std::cout << "char: " << "'" << c << "'" << "\n";
-	std::cout << "int: " << i << "\n";
-	std::cout << "float: " << std::fixed << std::setprecision(1) << f << 'f' << '\n';
-	std::cout << "double: " << d << "\n";
+	try
+	{
+		integer_value = std::stoi(input);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "convertToInteger error: " << e.what() << '\n';
+	}
+	return integer_value;
 }
 
-static void	integerConversionToOtherTypes( int i )
+float	convertToFloat( std::string const & input )
 {
-	float			f;
-	double			d;
-	unsigned char	c;
+	float	float_value;
 
-	i = static_cast<int>(i);
-	f = static_cast<float>(i);
-	d = static_cast<double>(i);
-	c = static_cast<unsigned char>(i);
-
-	if (std::isprint(c))
+	try
 	{
-		std::cout << "char: " << "'" << c << "'" << "\n";
+		float_value = std::stof(input);
 	}
-	else
+	catch(const std::exception& e)
 	{
-		std::cout << "char: Non displayable" << "\n";
+		std::cerr << "convertToFloat error: " << e.what() << '\n';
 	}
-
-	std::cout << "int: " << i << "\n";
-	std::cout << "float: " << std::fixed << std::setprecision(1) << f << 'f' << '\n';
-	std::cout << "double: " << d << "\n";
+	return float_value;
 }
 
-static void	floatConversionToOtherTypes( float f )
+double	convertToDouble( std::string const & input )
 {
-	int				i;
-	double			d;
-	unsigned char	c;
+	double	double_value;
 
-	if (std::numeric_limits<int>::max() >= f)
+	try
 	{
-		i = static_cast<int>(f);
+		double_value = std::stod(input);
 	}
-	d = static_cast<double>(f);
-	c = static_cast<unsigned char>(f);
-
-	if (std::isprint(c))
+	catch(const std::exception& e)
 	{
-		std::cout << "char: " << "'" << c << "'" << "\n";
+		std::cerr << "convertToDouble error: " << e.what() << '\n';
 	}
-	else
-	{
-		std::cout << "char: Non displayable" << "\n";
-	}
-
-	if (std::numeric_limits<int>::max() > f)
-	{
-		std::cout << "int: " << i << "\n";
-	}
-	else
-	{
-		std::cout << "int: impossible" << "\n";
-	}
-
-	std::cout << "float: " << std::fixed << std::setprecision(1) << f << 'f' << '\n';
-	std::cout << "double: " << d << "\n";
+	return double_value;
 }
 
-static void	doubleConversionToOtherTypes( double d )
+void	handleCharacterLiteral( std::string const & input )
 {
-	int				i;
-	float			f;
-	unsigned char	c;
+	int				integer_value;
+	float			float_value;
+	double			double_value;
+	unsigned char	char_value;
 
-	f = static_cast<float>(d);
-	c = static_cast<unsigned char>(d);
+	char_value = convertToCharacter(input);
 
-	if (std::isprint(c))
-	{
-		std::cout << "char: " << "'" << c << "'" << "\n";
-	}
-	else
-	{
-		std::cout << "char: Non displayable" << "\n";
-	}
+	integer_value = static_cast<int>(char_value);
+	float_value = static_cast<float>(char_value);
+	double_value = static_cast<double>(char_value);
+
+	printCharacterValue(char_value);
+	printIntegerValue(integer_value);
+	printFloatValue(float_value);
+	printDoubleValue(double_value);
+}
+
+void	handleIntegerLiteral( std::string const & input )
+{
+
+	int				integer_value;
+	float			float_value;
+	double			double_value;
+	unsigned char	char_value;
+
+	integer_value = convertToInteger(input);
+
+	char_value = static_cast<unsigned char>(integer_value);
+	float_value = static_cast<float>(integer_value);
+	double_value = static_cast<double>(integer_value);
+
+	printCharacterValue(char_value);
+	printIntegerValue(integer_value);
+	printFloatValue(float_value);
+	printDoubleValue(double_value);
+}
+
+void	handleFloatLiteral( std::string const & input )
+{
+	int				integer_value;
+	float			float_value;
+	double			double_value;
+	unsigned char	char_value;
+
+	float_value = convertToFloat(input);
+
+	char_value = static_cast<unsigned char>(float_value);
+	integer_value = static_cast<int>(float_value);
+	double_value = static_cast<double>(float_value);
+
+	printCharacterValue(char_value);
+
 	if (
-		(d > 0 && d - std::numeric_limits<int>::max() < 1)
-		|| (d < 0 && d - std::numeric_limits<int>::min() <= 0 && d - std::numeric_limits<int>::min() > -1))
-	{
-		i = static_cast<int>(d);
-		std::cout << "int: " << i << "\n";
-	}
-	else
+		std::isnan(float_value) ||
+		std::isinf(float_value) ||
+		static_cast<double>(float_value) > static_cast<double>(std::numeric_limits<int>::max()) ||
+		static_cast<double>(float_value) < static_cast<double>(std::numeric_limits<int>::min())
+	)
 	{
 		std::cout << "int: impossible" << "\n";
 	}
+	else
+	{
+		printIntegerValue(integer_value);
+	}
 
-	std::cout << "float: " << std::fixed << std::setprecision(1) << f << 'f' << '\n';
-	std::cout << "double: " << d << "\n";
+	printFloatValue(float_value);
+	printDoubleValue(double_value);
+}
+
+void	handleDoubleLiteral( std::string const & input )
+{
+	int				integer_value;
+	float			float_value;
+	double			double_value;
+	unsigned char	char_value;
+
+	double_value = convertToDouble(input);
+
+	char_value = static_cast<unsigned char>(double_value);
+	integer_value = static_cast<int>(double_value);
+	float_value = static_cast<float>(double_value);
+
+	printCharacterValue(char_value);
+
+	if (
+		std::isnan(double_value) ||
+		std::isinf(double_value) ||
+		double_value > static_cast<double>(std::numeric_limits<int>::max()) ||
+		double_value < static_cast<double>(std::numeric_limits<int>::min())
+	)
+	{
+		std::cout << "int: impossible" << "\n";
+	}
+	else
+	{
+		printIntegerValue(integer_value);
+	}
+
+	printFloatValue(float_value);
+	printDoubleValue(double_value);
+}
+
+ScalarConverter::Literals	getType( std::string const & input )
+{
+	if (isIntegerLiteral(input) == true)
+	{
+		return ScalarConverter::Literals::Integer;
+	}
+	else if (isFloatLiteral(input) == true)
+	{
+		return ScalarConverter::Literals::Float;
+	}
+	else if (isDoubleLiteral(input) == true)
+	{
+		return ScalarConverter::Literals::Double;
+	}
+	else if (isCharacterLiteral(input) == true)
+	{
+		return ScalarConverter::Literals::Character;
+	}
+	else
+	{
+		return ScalarConverter::Literals::Unknown;
+	}
 }
 
 void	ScalarConverter::convert( std::string const & input )
 {
-	int				i;
-	float			f;
-	double			d;
-	unsigned char	c;
 
-	(void) i;
-	(void) f;
-	(void) d;
-	(void) c;
-	ScalarConverter::Types	type = getType(input);
+	ScalarConverter::Literals	type = getType(input);
 
 	switch (type)
 	{
-		case ScalarConverter::Types::Integer:
+		case ScalarConverter::Literals::Integer:
 			std::cout << "Integer\n";
-			i = convertToInteger(input);
-			integerConversionToOtherTypes(i);
+			handleIntegerLiteral(input);
 			break;
-		case ScalarConverter::Types::Float:
+		case ScalarConverter::Literals::Float:
 			std::cout << "Float\n";
-			f = convertToFloat(input);
-			floatConversionToOtherTypes(f);
+			handleFloatLiteral(input);
 			break;
-		case ScalarConverter::Types::Double:
+		case ScalarConverter::Literals::Double:
 			std::cout << "Double\n";
-			d = convertToDouble(input);
-			doubleConversionToOtherTypes(d);
+			handleDoubleLiteral(input);
 			break;
-		case ScalarConverter::Types::Character:
+		case ScalarConverter::Literals::Character:
 			std::cout << "Character\n";
-			c = convertToCharacter(input);
-			characterConversionToOtherTypes(c);
+			handleCharacterLiteral(input);
 			break;
 		default:
-			std::cout << "Unknown\n";
+			std::cout << "Invalid input\n";
 			break;
 	}
 }
