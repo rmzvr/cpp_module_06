@@ -11,6 +11,15 @@ bool	isCharacterLiteral(std::string input)
 			return true;
 		}
 	}
+	else if (
+		input.length() == 3 &&
+		input.at(0) == '\'' &&
+		input.at(2) == '\'' &&
+		std::isprint(input.at(1))
+	)
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -106,7 +115,14 @@ unsigned char	convertToCharacter( std::string const & input )
 
 	try
 	{
-		char_value = static_cast<unsigned char>(input.at(0));
+		if (input.length() == 1)
+		{
+			char_value = static_cast<unsigned char>(input.at(0));
+		}
+		else
+		{
+			char_value = static_cast<unsigned char>(input.at(1));
+		}
 	}
 	catch(const std::exception& e)
 	{
@@ -297,19 +313,15 @@ void	ScalarConverter::convert( std::string const & input )
 	switch (type)
 	{
 		case ScalarConverter::Literals::Integer:
-			std::cout << "Integer\n";
 			handleIntegerLiteral(input);
 			break;
 		case ScalarConverter::Literals::Float:
-			std::cout << "Float\n";
 			handleFloatLiteral(input);
 			break;
 		case ScalarConverter::Literals::Double:
-			std::cout << "Double\n";
 			handleDoubleLiteral(input);
 			break;
 		case ScalarConverter::Literals::Character:
-			std::cout << "Character\n";
 			handleCharacterLiteral(input);
 			break;
 		default:
